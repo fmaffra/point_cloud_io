@@ -23,11 +23,11 @@ namespace point_cloud_io {
 
 Write::Write(ros::NodeHandle& nodeHandle)
     : nodeHandle_(nodeHandle),
-      filePrefix_("point_cloud"),
+      filePrefix_(""),
       fileEnding_("ply")
 {
   if (!readParameters()) ros::requestShutdown();
-  pointCloudSubscriber_ = nodeHandle_.subscribe(pointCloudTopic_, 1, &Write::pointCloudCallback, this);
+  pointCloudSubscriber_ = nodeHandle_.subscribe(pointCloudTopic_, 100, &Write::pointCloudCallback, this);
   ROS_INFO_STREAM("Subscribed to topic \"" << pointCloudTopic_ << "\".");
 }
 
@@ -86,7 +86,7 @@ std::cout << folderPath_ << std::endl;
     filePath << "_" << cloud->header.stamp.sec;
   }
   if (addStampNSecToPath_) {
-    filePath << "_" << cloud->header.stamp.nsec;
+    filePath << "" << cloud->header.stamp.toNSec();
   }
   filePath << ".";
   filePath << fileEnding_;
